@@ -1,6 +1,6 @@
 # CFR C++ Project
 
-This is a minimal CMake-based C++ project.
+Kuhn Poker trainer with CFR.
 
 ## Build
 
@@ -14,5 +14,5 @@ cmake --build .
 ## Run
 
 ```bash
-./cfr_app
+./main
 ```
