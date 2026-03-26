@@ -26,16 +26,16 @@ public:
     const std::array<double, NUM_ACTIONS>& getStrategy(double realizationWeight) {
         double normalizingSum = 0.0;
 
-        for (size_t a = 0; a < regretSum.size(); ++a) {
+        for (size_t a = 0; a < NUM_ACTIONS; ++a) {
             strategy[a] = regretSum[a] > 0 ? regretSum[a] : 0;
             normalizingSum += strategy[a];
         }
 
-        for (size_t a = 0; a < strategy.size(); ++a) {
+        for (size_t a = 0; a < NUM_ACTIONS; ++a) {
             if (normalizingSum > 0) {
                 strategy[a] /= normalizingSum;
             } else {
-                strategy[a] = 1.0 / strategy.size();
+                strategy[a] = 1.0 / NUM_ACTIONS;
             }
             strategySum[a] += realizationWeight * strategy[a];
         }
@@ -43,31 +43,31 @@ public:
         return strategy;
     }
 
-    const std::array<double, NUM_ACTIONS> getAverageStrategy() {
+    const std::array<double, NUM_ACTIONS> getAverageStrategy() const {
         std::array<double, NUM_ACTIONS> avgStrategy;
         double normalizingSum = 0.0;
 
-        for (size_t a = 0; a < strategySum.size(); ++a) {
+        for (size_t a = 0; a < NUM_ACTIONS; ++a) {
             normalizingSum += strategySum[a];
         }
 
-        for (size_t a = 0; a < strategySum.size(); ++a) {
+        for (size_t a = 0; a < NUM_ACTIONS; ++a) {
             if (normalizingSum > 0) {
                 avgStrategy[a] = strategySum[a] / normalizingSum;
             } else {
-                avgStrategy[a] = 1.0 / strategySum.size();
+                avgStrategy[a] = 1.0 / NUM_ACTIONS;
             }
         }
 
         return avgStrategy;
     }
 
-    friend std::ostream& operator<<(std::ostream& out, Node& node) {
+    friend std::ostream& operator<<(std::ostream& out, const Node& node) {
         out << node.infoSet << ": ";
         auto avgStrategy = node.getAverageStrategy(); // Update average strategy before printing
         out << "Average Strategy: ";
 
-        for (size_t a = 0; a < avgStrategy.size(); ++a) {
+        for (size_t a = 0; a < NUM_ACTIONS; ++a) {
             out << "Action " << a << ": " << avgStrategy[a] << " ";
         }
 
@@ -83,9 +83,9 @@ public:
 
 class KuhnTrainer {
     // each node represents a game state and contains the regret sums, strategy sums, and current strategy for that state
-    std::map<std::string, Node> nodeMap; // maps info sets to nodes
+    std::map<std::string, Node> nodeMap; // maps info sets to nodes, unordered_map can be used for faster access but map is used here for ordered output
 
-    double cfr(char* cards, std::string history, double p0, double p1) {
+    double cfr(char cards[], std::string history, double p0, double p1) {
         int plays = static_cast<int>(history.length());
         int player = plays % 2;
         bool isPlayerCardHigher = cards[player] > cards[1 - player];
