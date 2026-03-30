@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Define source files
 add_executable(main src/main.cpp)
+add_executable(dudo src/dudo.cpp)
 
 # Install target (optional)
 install(TARGETS main RUNTIME DESTINATION bin)
+install(TARGETS dudo RUNTIME DESTINATION bin)
